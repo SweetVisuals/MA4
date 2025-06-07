@@ -777,7 +777,7 @@ export default function CheckoutPage() {
           <DialogFooter>
             <Button onClick={() => {
               setShowSuccessDialog(false);
-              navigate('/dashboard/orders');
+              navigate('/orders/history');
             }}>
               View Order History
             </Button>

@@ -234,7 +234,7 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           {!user ? (
-            <Button asChild variant="ghost\" size="sm">
+            <Button asChild variant="ghost" size="sm">
               <a href="/auth/login">
                 Login
               </a>
@@ -359,14 +359,20 @@ export function SiteHeader() {
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Messages
                       {unreadMessages > 0 && (
-                        <Badge variant="secondary\" className="ml-auto">{unreadMessages}</Badge>
+                        <Badge variant="secondary" className="ml-auto">{unreadMessages}</Badge>
                       )}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/dashboard/orders">
                       <ShoppingBag className="mr-2 h-4 w-4" />
-                      My Orders
+                      Seller Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/orders/history">
+                      <ShoppingBag className="mr-2 h-4 w-4" />
+                      My Purchases
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>

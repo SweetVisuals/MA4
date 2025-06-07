@@ -18,6 +18,7 @@ import TutorialsPage from "@/app/home/tutorials"
 import MarketingPage from "@/app/home/marketing"
 import CollaboratePage from "@/app/home/collaborate"
 import CheckoutPage from "@/app/checkout/checkout"
+import OrderHistoryPage from "@/app/orders/order-history"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { SidebarProvider } from "@/components/@/ui/sidebar"
 import { AudioPlayerProvider } from "@/contexts/audio-player-context"
@@ -135,6 +136,10 @@ function App() {
                 <OrdersPage />
               </ProtectedRoute>
             } 
+          />
+          <Route 
+            path="/orders/history" 
+            element={<OrderHistoryPage />} 
           />
           <Route 
             path="/dashboard/sales" 
