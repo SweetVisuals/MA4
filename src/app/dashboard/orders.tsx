@@ -1056,7 +1056,7 @@ export default function OrdersPage() {
                   </div>
                 ) : selectedAttachment?.name.endsWith('.zip') ? (
                   <div className="text-center">
-                    <Package className="h-16 w-16 mx-auto text-primary/50 mb-4" />
+                    <CustomPackage className="h-16 w-16 mx-auto text-primary/50 mb-4" />
                     <p className="text-muted-foreground">Archive file</p>
                   </div>
                 ) : (
@@ -1129,7 +1129,7 @@ function MapPin(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
-function Package(props: React.SVGProps<SVGSVGElement>) {
+function CustomPackage(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
