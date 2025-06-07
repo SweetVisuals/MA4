@@ -43,14 +43,24 @@ import { FileItem } from '@/lib/types';
 
 interface UnifiedFileBrowserProps {
   initialFiles?: FileItem[];
+  files?: FileItem[];
+  folders?: FileItem[];
+  onUpload?: () => void;
+  onCreateFolder?: () => void;
+  uploadFile?: (file: File, folderId?: string | null, onProgress?: (progress: number) => void) => Promise<{success: boolean, error?: any}>;
 }
 
 export function UnifiedFileBrowser({ 
-  initialFiles
+  initialFiles,
+  files: propFiles,
+  folders: propFolders,
+  onUpload,
+  onCreateFolder,
+  uploadFile: propUploadFile
 }: UnifiedFileBrowserProps) {
   const { user } = useAuth();
-  const [files, setFiles] = useState<FileItem[]>(initialFiles || []);
-  const [folders, setFolders] = useState<FileItem[]>([]);
+  const [files, setFiles] = useState<FileItem[]>(propFiles || initialFiles || []);
+  const [folders, setFolders] = useState<FileItem[]>(propFolders || []);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredFiles, setFilteredFiles] = useState<FileItem[]>([]);
@@ -97,6 +107,21 @@ export function UnifiedFileBrowser({
     );
     setFilteredFiles(filtered);
   }, [files, searchQuery]);
+
+  // Update files when propFiles changes
+  useEffect(() => {
+    if (propFiles) {
+      setFiles(propFiles);
+      setFilteredFiles(propFiles);
+    }
+  }, [propFiles]);
+
+  // Update folders when propFolders changes
+  useEffect(() => {
+    if (propFolders) {
+      setFolders(propFolders);
+    }
+  }, [propFolders]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -156,6 +181,11 @@ export function UnifiedFileBrowser({
       setFolders(prev => [...prev, uiFolder]);
       setNewFolderName('');
       setShowNewFolderDialog(false);
+      
+      // Call the onCreateFolder callback if provided
+      if (onCreateFolder) {
+        onCreateFolder();
+      }
       
       toast({
         title: "Folder created",
@@ -298,14 +328,25 @@ export function UnifiedFileBrowser({
         setUploadProgress(Math.round((i / files.length) * 100));
         
         // Upload the file with progress tracking
-        await uploadFile(file, selectedFolder || undefined, (progress) => {
-          // Update individual file progress
-          setUploadingFiles(prev => {
-            const newFiles = [...prev];
-            newFiles[i] = { ...newFiles[i], progress };
-            return newFiles;
+        if (propUploadFile) {
+          await propUploadFile(file, selectedFolder || undefined, (progress) => {
+            // Update individual file progress
+            setUploadingFiles(prev => {
+              const newFiles = [...prev];
+              newFiles[i] = { ...newFiles[i], progress };
+              return newFiles;
+            });
           });
-        });
+        } else {
+          await uploadFile(file, selectedFolder || undefined, (progress) => {
+            // Update individual file progress
+            setUploadingFiles(prev => {
+              const newFiles = [...prev];
+              newFiles[i] = { ...newFiles[i], progress };
+              return newFiles;
+            });
+          });
+        }
       }
 
       // Set final progress to 100%
@@ -316,8 +357,13 @@ export function UnifiedFileBrowser({
         description: `Successfully uploaded ${files.length} file${files.length > 1 ? 's' : ''}`,
       });
       
-      // Refresh the file list
-      fetchFiles();
+      // Call the onUpload callback if provided
+      if (onUpload) {
+        onUpload();
+      } else {
+        // Refresh the file list
+        fetchFiles();
+      }
     } catch (error) {
       toast({
         title: "Upload failed",
@@ -523,7 +569,7 @@ export function UnifiedFileBrowser({
   // Function to upload a file
   const uploadFile = async (
     file: File, 
-    folderId?: string, 
+    folderId?: string | null, 
     onProgress?: (progress: number) => void
   ) => {
     try {
@@ -654,10 +700,10 @@ export function UnifiedFileBrowser({
 
   // Initialize by fetching files
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && !propFiles) {
       fetchFiles();
     }
-  }, [user?.id, selectedFolder]);
+  }, [user?.id, selectedFolder, propFiles]);
 
   // Function to get files for the selected folder
   const getFilesForSelectedFolder = () => {
@@ -675,6 +721,65 @@ export function UnifiedFileBrowser({
       }
     });
   };
+
+  // Create the upload drag and drop area component
+  const UploadArea = () => (
+    <div
+      className={cn(
+        "border-2 border-dashed rounded-lg p-4 text-center",
+        "transition-all hover:border-primary/50 mt-4"
+      )}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      {isUploading ? (
+        <div className="space-y-4">
+          <p className="text-muted-foreground">Uploading...</p>
+          <div className="relative max-w-md mx-auto">
+            <Progress 
+              value={uploadProgress} 
+              className="h-2 bg-muted" 
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">{Math.round(uploadProgress)}%</p>
+          
+          {/* Individual file progress */}
+          {uploadingFiles.length > 1 && (
+            <div className="mt-4 max-w-md mx-auto">
+              <h4 className="text-sm font-medium text-left mb-2">Files ({uploadingFiles.length})</h4>
+              <div className="space-y-2 max-h-32 overflow-y-auto">
+                {uploadingFiles.map((file, index) => (
+                  <div key={index} className="text-left">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="truncate max-w-[80%]">{file.name}</span>
+                      <span>{Math.round(file.progress)}%</span>
+                    </div>
+                    <Progress 
+                      value={file.progress} 
+                      className="h-1 bg-muted/50" 
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            Drag and drop audio files here or{" "}
+            <Button variant="link" className="p-0 h-auto" onClick={handleUploadClick}>
+              browse
+            </Button>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Maximum {MAX_UPLOAD_FILES} files at once
+          </p>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -953,62 +1058,6 @@ export function UnifiedFileBrowser({
             </h1>
           </div>
 
-          <div
-            className={cn(
-              "border-2 border-dashed rounded-lg m-4 p-4 text-center",
-              "transition-all hover:border-primary/50"
-            )}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            {isUploading ? (
-              <div className="space-y-4">
-                <p className="text-muted-foreground">Uploading...</p>
-                <div className="relative max-w-md mx-auto">
-                  <Progress 
-                    value={uploadProgress} 
-                    className="h-2 bg-muted" 
-                  />
-                </div>
-                <p className="text-sm text-muted-foreground">{Math.round(uploadProgress)}%</p>
-                
-                {/* Individual file progress */}
-                {uploadingFiles.length > 1 && (
-                  <div className="mt-4 max-w-md mx-auto">
-                    <h4 className="text-sm font-medium text-left mb-2">Files ({uploadingFiles.length})</h4>
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
-                      {uploadingFiles.map((file, index) => (
-                        <div key={index} className="text-left">
-                          <div className="flex justify-between text-xs mb-1">
-                            <span className="truncate max-w-[80%]">{file.name}</span>
-                            <span>{Math.round(file.progress)}%</span>
-                          </div>
-                          <Progress 
-                            value={file.progress} 
-                            className="h-1 bg-muted/50" 
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  Drag and drop audio files here or{" "}
-                  <Button variant="link" className="p-0 h-auto" onClick={handleUploadClick}>
-                    browse
-                  </Button>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Maximum {MAX_UPLOAD_FILES} files at once
-                </p>
-              </div>
-            )}
-          </div>
-
           <div className="flex-1 p-4">
             {/* Display files for selected folder */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1103,6 +1152,9 @@ export function UnifiedFileBrowser({
                 </div>
               ))}
             </div>
+            
+            {/* Always show upload area */}
+            <UploadArea />
           </div>
         </div>
       </div>
