@@ -37,7 +37,7 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
   const { currentTrack, playTrack } = useAudioPlayer();
   const { user } = useAuth();
-  const { addToCart } = useCart();
+  const { addToCart, isInCart } = useCart();
   const [trackGems, setTrackGems] = useState<Record<string, number>>({});
   const [isDeleting, setIsDeleting] = useState(false);
   
@@ -171,7 +171,7 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             {project.isPopular && (
-              <Badge variant="secondary\" className="shrink-0 text-xs">
+              <Badge variant="secondary" className="shrink-0 text-xs">
                 Popular
               </Badge>
             )}
@@ -307,13 +307,13 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
           
           <div className="flex items-center gap-3">
             <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-7 text-xs gap-1"
+              variant="ghost" 
+              size="icon" 
+              className="h-7 w-7"
               onClick={handleAddToCart}
+              title="Add to cart"
             >
-              <ShoppingCart className="h-3 w-3" />
-              Buy
+              <ShoppingCart className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
             </Button>
             <MessageSquare 
               className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary hover:scale-110 transition-all" 
