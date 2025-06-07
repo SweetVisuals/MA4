@@ -17,6 +17,7 @@ import FindTalentPage from "@/app/home/find-talent"
 import TutorialsPage from "@/app/home/tutorials"
 import MarketingPage from "@/app/home/marketing"
 import CollaboratePage from "@/app/home/collaborate"
+import CheckoutPage from "@/app/checkout/checkout"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { SidebarProvider } from "@/components/@/ui/sidebar"
 import { AudioPlayerProvider } from "@/contexts/audio-player-context"
@@ -193,6 +194,7 @@ function App() {
           <Route path="/marketing" element={<MarketingPage />} />
           <Route path="/collaborate" element={<CollaboratePage />} />
           <Route path="/following" element={<CollaboratePage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="*" element={<Navigate to="/\" replace />} />
         </Routes>
         <AudioPlayer />

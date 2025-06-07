@@ -16,7 +16,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
-import { useLocation, Link } from "react-router-dom"
+import { useLocation, Link, useNavigate } from "react-router-dom"
 import { useMessages } from "@/hooks/useMessages"
 import { useCart } from "@/contexts/cart-context"
 import {
@@ -34,6 +34,7 @@ export function SiteHeader() {
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [unreadMessages, setUnreadMessages] = useState<number>(0)
   const location = useLocation()
+  const navigate = useNavigate()
   const { unreadCount } = useMessages(user?.id || '')
   const { cart, removeFromCart, clearCart } = useCart()
   const [showCartDialog, setShowCartDialog] = useState(false)
@@ -138,21 +139,8 @@ export function SiteHeader() {
   }, [unreadCount]);
 
   const handleCheckout = () => {
-    if (cart.length === 0) return;
-    
-    // Calculate total
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    
-    // Check if user has enough balance
-    if (total > walletBalance) {
-      toast.error("Insufficient funds in your wallet");
-      return;
-    }
-    
-    // Process payment
-    toast.success("Payment successful! Items purchased.");
-    clearCart();
-    setShowCartDialog(false);
+    // Navigate to checkout page instead of showing dialog
+    navigate('/checkout');
   };
 
   if (isLoading) return null
@@ -234,7 +222,7 @@ export function SiteHeader() {
                       <Button 
                         className="w-full" 
                         size="sm"
-                        onClick={() => setShowCartDialog(true)}
+                        onClick={handleCheckout}
                       >
                         Checkout
                       </Button>
@@ -246,7 +234,7 @@ export function SiteHeader() {
           </div>
           <ThemeToggle />
           {!user ? (
-            <Button asChild variant="ghost\" size="sm">
+            <Button asChild variant="ghost" size="sm">
               <a href="/auth/login">
                 Login
               </a>
@@ -371,7 +359,7 @@ export function SiteHeader() {
                       <MessageSquare className="mr-2 h-4 w-4" />
                       Messages
                       {unreadMessages > 0 && (
-                        <Badge variant="secondary\" className="ml-auto">{unreadMessages}</Badge>
+                        <Badge variant="secondary" className="ml-auto">{unreadMessages}</Badge>
                       )}
                     </Link>
                   </DropdownMenuItem>
@@ -390,91 +378,6 @@ export function SiteHeader() {
           )}
         </div>
       </div>
-
-      {/* Cart Checkout Dialog */}
-      <Dialog open={showCartDialog} onOpenChange={setShowCartDialog}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Checkout</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="rounded-md border">
-              <div className="p-4 font-medium border-b">
-                Cart Items ({cart.length})
-              </div>
-              <div className="divide-y">
-                {cart.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                      {item.artworkUrl && (
-                        <div className="h-10 w-10 rounded-md overflow-hidden">
-                          <img 
-                            src={item.artworkUrl} 
-                            alt={item.title} 
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.type || 'Beat'}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">${item.price.toFixed(2)}</p>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 px-2 text-red-500 hover:text-red-700"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-md border p-4 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Tax</span>
-                <span>$0.00</span>
-              </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between font-medium">
-                <span>Total</span>
-                <span>${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</span>
-              </div>
-            </div>
-
-            <div className="rounded-md border p-4 bg-muted/20">
-              <div className="flex items-center gap-2">
-                <Wallet className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Wallet Balance</p>
-                  <p className="text-sm text-muted-foreground">${walletBalance.toFixed(2)} available</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCartDialog(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleCheckout}
-              disabled={cart.length === 0 || cart.reduce((sum, item) => sum + item.price, 0) > walletBalance}
-            >
-              Complete Purchase
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </header>
   )
 }
