@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98.8235%;
+    --foreground: 0 0% 9.0196%;
+    --card: 0 0% 98.8235%;
+    --card-foreground: 0 0% 9.0196%;
+    --popover: 0 0% 98.8235%;
+    --popover-foreground: 0 0% 32.1569%;
+    --primary: 180.9677 33.3333% 63.5294%;
+    --primary-foreground: 180 6.0606% 12.9412%;
+    --secondary: 0 0% 99.2157%;
+    --secondary-foreground: 0 0% 9.0196%;
+    --muted: 0 0% 92.9412%;
+    --muted-foreground: 0 0% 12.5490%;
+    --accent: 0 0% 92.9412%;
+    --accent-foreground: 0 0% 12.5490%;
+    --destructive: 40 41.2322% 41.3725%;
+    --destructive-foreground: 30 50% 94.5098%;
+    --border: 0 0% 87.4510%;
+    --input: 0 0% 96.4706%;
+    --ring: 180.9677 33.3333% 63.5294%;
+    --chart-1: 180.9677 33.3333% 63.5294%;
+    --chart-2: 247.2000 45.4545% 56.8627%;
+    --chart-3: 288 44.9735% 62.9412%;
+    --chart-4: 68.0357 45.9016% 47.8431%;
+    --chart-5: 190.3704 42.4084% 37.4510%;
+    --sidebar: 0 0% 98.8235%;
+    --sidebar-foreground: 0 0% 43.9216%;
+    --sidebar-primary: 180.9677 33.3333% 63.5294%;
+    --sidebar-primary-foreground: 180 6.0606% 12.9412%;
+    --sidebar-accent: 0 0% 92.9412%;
+    --sidebar-accent-foreground: 0 0% 12.5490%;
+    --sidebar-border: 0 0% 87.4510%;
+    --sidebar-ring: 180.9677 33.3333% 63.5294%;
+  }
+
+  .dark {
+    --background: 0 0% 7.0588%;
+    --foreground: 245.4545 16.4179% 86.8627%;
+    --card: 0 0% 9.0196%;
+    --card-foreground: 245.4545 16.4179% 86.8627%;
+    --popover: 0 0% 14.1176%;
+    --popover-foreground: 0 0% 66.2745%;
+    --primary: 185.1064 50.5376% 18.2353%;
+    --primary-foreground: 180 10.0000% 84.3137%;
+    --secondary: 0 0% 14.1176%;
+    --secondary-foreground: 0 0% 98.0392%;
+    --muted: 0 0% 12.1569%;
+    --muted-foreground: 0 0% 63.5294%;
+    --accent: 0 0% 19.2157%;
+    --accent-foreground: 0 0% 98.0392%;
+    --destructive: 36.0000 30% 19.6078%;
+    --destructive-foreground: 45 6.2500% 87.4510%;
+    --border: 0 0% 16.0784%;
+    --input: 0 0% 14.1176%;
+    --ring: 171.6456 34.4978% 55.0980%;
+    --chart-1: 171.6456 34.4978% 55.0980%;
+    --chart-2: 242.8235 46.9613% 64.5098%;
+    --chart-3: 285 45.7143% 72.5490%;
+    --chart-4: 73.5652 48.5232% 53.5294%;
+    --chart-5: 202.5000 32.7869% 47.8431%;
+    --sidebar: 0 0% 7.0588%;
+    --sidebar-foreground: 0 0% 53.7255%;
+    --sidebar-primary: 185.1064 50.5376% 18.2353%;
+    --sidebar-primary-foreground: 180 10.0000% 84.3137%;
+    --sidebar-accent: 0 0% 19.2157%;
+    --sidebar-accent-foreground: 0 0% 98.0392%;
+    --sidebar-border: 0 0% 16.0784%;
+    --sidebar-ring: 171.6456 34.4978% 55.0980%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+  font-display: swap;
+}
+
+/* Custom animations */
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.3);
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-wave {
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.animate-progress {
+  animation: progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Modern glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Modern card hover effect */
+.hover-card {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .hover-card:hover {
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.3);
+}

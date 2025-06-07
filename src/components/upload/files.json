@@ -1,0 +1,185 @@
+[
+  {
+    "id": "1",
+    "name": "Documents",
+    "type": "folder",
+    "badge": {
+      "variant": "secondary",
+      "label": "1"
+    },
+    "children": [
+      {
+        "id": "3",
+        "name": "Project1.pdf",
+        "type": "file",
+        "size": "2.5 MB",
+        "lastModified": "2025-05-30"
+      },
+      {
+        "id": "4",
+        "name": "Project2.pdf",
+        "type": "file",
+        "size": "1.8 MB",
+        "lastModified": "2025-05-28"
+      },
+      {
+        "id": "11",
+        "name": "Meeting Notes",
+        "type": "folder",
+        "children": [
+          {
+            "id": "12",
+            "name": "May Notes.docx",
+            "type": "file",
+            "size": "450 KB",
+            "lastModified": "2025-05-31"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "name": "Music",
+    "type": "folder",
+    "badge": {
+      "variant": "default",
+      "label": "New"
+    },
+    "children": [
+      {
+        "id": "8",
+        "name": "Album1",
+        "type": "folder",
+        "children": [
+          {
+            "id": "9",
+            "name": "Track1.mp3",
+            "type": "audio",
+            "size": "5.2 MB",
+            "lastModified": "2025-05-20"
+          },
+          {
+            "id": "10",
+            "name": "Demo Song.wav",
+            "type": "audio",
+            "size": "8.7 MB",
+            "lastModified": "2025-06-01"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "name": "Playlists",
+        "type": "folder",
+        "children": [
+          {
+            "id": "16",
+            "name": "Workout Mix",
+            "type": "folder",
+            "children": [
+              {
+                "id": "17",
+                "name": "Pump Up.mp3",
+                "type": "audio",
+                "size": "6.1 MB",
+                "lastModified": "2025-05-25"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "18",
+    "name": "Images",
+    "type": "folder",
+    "children": [
+      {
+        "id": "19",
+        "name": "Vacation",
+        "type": "folder",
+        "children": [
+          {
+            "id": "20",
+            "name": "Beach.jpg",
+            "type": "image",
+            "size": "3.4 MB",
+            "lastModified": "2025-05-10"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "name": "Test Files",
+    "type": "folder",
+    "children": [
+      {
+        "id": "22",
+        "name": "Folder 1",
+        "type": "folder",
+        "children": [
+          {
+            "id": "23",
+            "name": "File 1.txt",
+            "type": "file",
+            "size": "0 KB",
+            "lastModified": "2025-06-01"
+          },
+          {
+            "id": "24",
+            "name": "Folder 1A",
+            "type": "folder",
+            "children": [
+              {
+                "id": "25",
+                "name": "File 1A.txt",
+                "type": "file",
+                "size": "0 KB",
+                "lastModified": "2025-06-01"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "26",
+        "name": "Folder 2",
+        "type": "folder",
+        "children": [
+          {
+            "id": "27",
+            "name": "File 2.txt",
+            "type": "file",
+            "size": "0 KB",
+            "lastModified": "2025-06-01"
+          },
+          {
+            "id": "28",
+            "name": "Folder 2A",
+            "type": "folder",
+            "children": [
+              {
+                "id": "29",
+                "name": "Folder 2AA",
+                "type": "folder",
+                "children": [
+                  {
+                    "id": "30",
+                    "name": "File 2AA.txt",
+                    "type": "file",
+                    "size": "0 KB",
+                    "lastModified": "2025-06-01"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

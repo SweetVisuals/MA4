@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Documents",
+    "type": "folder",
+    "id": "1",
+    "pinned": true,
+    "badge": {
+      "variant": "secondary",
+      "label": "12"
+    },
+    "children": [
+      {
+        "name": "Work",
+        "type": "folder",
+        "id": "2",
+        "starred": true,
+        "badge": {
+          "variant": "destructive",
+          "label": "2"
+        },
+        "children": [
+          {
+            "name": "Project1.pdf",
+            "type": "file",
+            "size": "2.5 MB",
+            "modified": "2025-05-30",
+            "id": "3"
+          },
+          {
+            "name": "Project2.pdf",
+            "type": "file",
+            "size": "1.8 MB",
+            "modified": "2025-05-28",
+            "id": "4"
+          }
+        ]
+      },
+      {
+        "name": "Personal",
+        "type": "folder",
+        "id": "5",
+        "children": [
+          {
+            "name": "Resume.pdf",
+            "type": "file",
+            "size": "300 KB",
+            "modified": "2025-05-15",
+            "id": "6"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Music",
+    "type": "folder",
+    "id": "7",
+    "badge": {
+      "variant": "default",
+      "label": "New"
+    },
+    "children": [
+      {
+        "name": "Album1",
+        "type": "folder",
+        "id": "8",
+        "children": [
+          {
+            "name": "Track1.mp3",
+            "type": "file",
+            "size": "5.2 MB",
+            "modified": "2025-05-20",
+            "id": "9"
+          }
+        ]
+      }
+    ]
+  }
+]

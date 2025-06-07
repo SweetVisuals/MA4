@@ -1,0 +1,174 @@
+# TuneFlow Project Overview
+
+## Project Purpose
+TuneFlow is a professional collaboration platform combining the best of:
+- Dropbox's file management
+- YouTube's content discovery
+- Google Drive's organization
+- Spotify's audio streaming
+
+Designed specifically for music professionals to:
+- Share high-quality audio files (stems, mixes, masters)
+- Connect with collaborators (artists, engineers, producers)
+- Manage projects and versions
+- Stream and preview tracks
+
+## Core Features
+
+### File Management
+- **Drag & Drop Upload**: Intuitive interface for uploading stems, mixes, and masters
+- **Version Control**: Track revisions and alternate takes
+- **Project Organization**: Folder structure with metadata tagging
+- **Secure Sharing**: Granular permissions for collaborators
+
+### Professional Networking
+- **Skill-Based Profiles**: Highlight specialties (mixing, vocals, production)
+- **Project Matching**: Connect with complementary professionals
+- **Messaging System**: Built-in communication tools
+- **Portfolio Showcase**: Display best work with context
+
+### Audio Features
+- **High-Fidelity Streaming**: Studio-quality playback
+- **Time-Stamped Comments**: Precise feedback on tracks
+- **AB Comparison**: Quickly compare versions
+- **Reference Track Matching**: Analyze against professional standards
+
+### Technical Implementation
+- **Frontend**: 
+  - React with TypeScript
+  - Vite build system
+  - ShadCN UI component library
+  - Tailwind CSS for styling
+- **Backend**:
+  - Supabase for authentication and database
+  - PostgreSQL database with real-time capabilities
+  - Storage for audio files and assets
+- **Audio Processing**:
+  - Web Audio API integration
+  - Custom audio visualization components
+
+## User Flows
+
+### Content Creator
+1. Upload project files with metadata
+2. Organize into workspaces
+3. Share with specific collaborators
+4. Receive and implement feedback
+
+### Collaborator
+1. Browse projects matching skills
+2. Preview and download stems
+3. Submit revisions
+4. Track project progress
+
+### Project Manager
+1. Assemble team members
+2. Monitor file versions
+3. Coordinate feedback
+4. Finalize deliverables
+
+## Project Goals
+
+### Short-term Objectives
+- Implement professional-grade file management
+- Create collaboration-focused user profiles
+- Develop version control for audio projects
+- Build secure sharing infrastructure
+
+### Long-term Vision
+- Become industry standard for music collaboration
+- Integrate with DAWs (Digital Audio Workstations)
+- Develop AI-assisted matching for collaborators
+- Create mobile app for on-the-go access
+
+## Technical Requirements
+- Strict TypeScript typing
+- Component-based architecture
+- Responsive design for all devices
+- Optimized audio streaming performance
+- Secure authentication and data handling
+
+
+# Directory Project Critical Rules
+
+## FOLLOW THIS AT ALL TIMES [CRITICAL COMPLIANCE REQUIRED]
+## MAIN RULES [CRITICAL]:
+
+## Project Structure
+
+The App is made up of 2 main sections and each section has its own sidebar. The dashboard is the backend for the user. The homepage is the frontend for the user. 
+
+- The Homepage (src/app/home)
+- The Dashboard (src/app/dashboard)
+
+## Development Guidelines
+
+- BREAK DOWN ELEMENTS INTO SMALLER COMPONENTS AT ALL TIME
+- ORGANISE THE FILE STRUCTURE INTO FOLDERS FOR EASY NAVIGATION
+- QUESTION YOUR APPROACH AND PLAY DEVILS ADVOCATE
+- ONLY FOLLOW MY LATEST PROMPT AT ALL TIMES
+- FOLLOW THE FILE STRUCTURE BELOW
+
+## File Structure
+
+```
+TuneFlow/
+├── public/                  # Static assets
+├── src/
+│   ├── app/                 # Main application routes
+│   │   ├── auth/            # Authentication pages
+│   │   ├── dashboard/       # Dashboard pages
+│   │   ├── home/            # Homepage sections
+│   │   ├── files/           # File management
+│   │   ├── upload/          # Upload functionality
+│   │   └── user/            # User profile
+│   ├── components/          # Reusable components
+│   │   ├── @/               # UI component library
+│   │   ├── audio/           # Audio player components
+│   │   ├── auth/            # Auth forms and routes
+│   │   ├── blocks/          # Page sections
+│   │   ├── dashboard/       # Dashboard components
+│   │   ├── homepage/        # Homepage components
+│   │   ├── profile/         # Profile components
+│   │   ├── ui/              # Basic UI elements
+│   │   └── upload/          # Upload components
+│   ├── contexts/            # React contexts
+│   ├── hooks/               # Custom hooks
+│   ├── lib/                 # Utility functions
+│   └── main.tsx             # Application entry point
+├── .clinerules/             # Project-specific rules
+├── package.json             # Project dependencies
+└── vite.config.ts           # Build configuration
+```
+
+
+# Development Improvement Guidelines
+
+## Intuitive Development Approach
+- Always analyze the code context thoroughly before making changes
+- Make comprehensive, production-ready improvements beyond just the immediate request
+- Predict related changes needed for consistency and best practices
+- Consider the broader impact of changes across the codebase
+
+## Critical Rules [CRITICAL COMPLIANCE REQUIRED]
+- FOLLOW ALL PROJECT RULES AT ALL TIMES
+- When given a prompt, analyze the full context and make intuitive improvements
+- Go beyond the immediate request to ensure production-quality code
+- Document all assumptions and reasoning behind changes
+
+## Implementation Standards
+1. **Code Analysis**:
+   - Review related components and dependencies
+   - Check for consistency with existing patterns
+   - Verify TypeScript types and interfaces
+
+2. **Change Scope**:
+   - Make all necessary related changes, not just the explicit request
+   - Update documentation and tests when modifying functionality
+   - Consider performance and accessibility impacts
+
+3. **Quality Assurance**:
+   - Validate changes against project standards
+   - Ensure proper error handling and edge cases
+   - Maintain clean, well-structured code
+

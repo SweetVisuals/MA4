@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "client": "John Doe",
+    "service": "Mix & Master",
+    "price": 299.99,
+    "status": "pending",
+    "date": "2024-03-15"
+  },
+  {
+    "id": "2", 
+    "client": "Jane Smith",
+    "service": "Vocal Recording",
+    "price": 149.99,
+    "status": "accepted",
+    "date": "2024-03-14"
+  },
+  {
+    "id": "3",
+    "client": "Mike Johnson",
+    "service": "Music Production",
+    "price": 499.99,
+    "status": "completed",
+    "date": "2024-03-13"
+  },
+  {
+    "id": "4",
+    "client": "Sarah Williams",
+    "service": "Sound Design",
+    "price": 199.99,
+    "status": "rejected",
+    "date": "2024-03-12"
+  }
+]
