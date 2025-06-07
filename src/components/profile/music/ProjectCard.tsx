@@ -158,7 +158,7 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             {project.isPopular && (
-              <Badge variant="secondary" className="shrink-0 text-xs">
+              <Badge variant="secondary\" className="shrink-0 text-xs">
                 Popular
               </Badge>
             )}
