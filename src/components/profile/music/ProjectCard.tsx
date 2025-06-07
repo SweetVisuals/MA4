@@ -242,25 +242,27 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
                   </span>
                 </button>
                 
-                {/* Gem button */}
-                <button
-                  onClick={(e) => handleGiveGem(track.id, e)}
-                  className="ml-1 p-1.5 rounded-full hover:bg-primary/10 transition-colors"
-                  title="Give a gem"
-                >
-                  <Gem 
-                    className={`h-4 w-4 transition-colors ${
-                      (trackGems[track.id] || 0) > 0 
-                        ? 'text-violet-500' 
-                        : 'text-gray-400 hover:text-violet-500'
-                    }`} 
-                  />
-                  {(trackGems[track.id] || 0) > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-violet-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
-                      {trackGems[track.id]}
-                    </span>
-                  )}
-                </button>
+                {/* Gem button - fixed width container for consistent alignment */}
+                <div className="w-8 flex justify-center">
+                  <button
+                    onClick={(e) => handleGiveGem(track.id, e)}
+                    className="p-1.5 rounded-full hover:bg-primary/10 transition-colors"
+                    title="Give a gem"
+                  >
+                    <Gem 
+                      className={`h-4 w-4 transition-colors ${
+                        (trackGems[track.id] || 0) > 0 
+                          ? 'text-violet-500' 
+                          : 'text-gray-400 hover:text-violet-500'
+                      }`} 
+                    />
+                    {(trackGems[track.id] || 0) > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-violet-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                        {trackGems[track.id]}
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
             {!project.tracks || project.tracks.length === 0 ? (
