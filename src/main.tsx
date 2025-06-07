@@ -5,6 +5,7 @@ import { Toaster } from "sonner"
 import App from "./App"
 import { AuthProvider } from "./contexts/auth-context"
 import { ThemeProvider } from "./components/theme-provider"
+import { CartProvider } from "./contexts/cart-context"
 import "./styles/global.css"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -12,8 +13,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <AuthProvider>
-          <App />
-          <Toaster richColors position="bottom-right" />
+          <CartProvider>
+            <App />
+            <Toaster richColors position="bottom-right" />
+          </CartProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

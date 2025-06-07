@@ -11,13 +11,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/@/ui/dropdown-menu"
-import { Bell, Settings, LogOut, User, MessageSquare, LayoutGrid, Wallet, Gem } from "lucide-react"
+import { Bell, Settings, LogOut, User, MessageSquare, LayoutGrid, Wallet, Gem, ShoppingCart } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { useLocation, Link } from "react-router-dom"
 import { useMessages } from "@/hooks/useMessages"
+import { useCart } from "@/contexts/cart-context"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/@/ui/dialog"
+import { toast } from "sonner"
 
 export function SiteHeader() {
   const { user, isLoading, signOut } = useAuth()
@@ -26,6 +35,8 @@ export function SiteHeader() {
   const [unreadMessages, setUnreadMessages] = useState<number>(0)
   const location = useLocation()
   const { unreadCount } = useMessages(user?.id || '')
+  const { cart, removeFromCart, clearCart } = useCart()
+  const [showCartDialog, setShowCartDialog] = useState(false)
 
   // Get the current page name from the location
   const getCurrentPageName = () => {
@@ -126,6 +137,24 @@ export function SiteHeader() {
     setUnreadMessages(unreadCount);
   }, [unreadCount]);
 
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    
+    // Calculate total
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    
+    // Check if user has enough balance
+    if (total > walletBalance) {
+      toast.error("Insufficient funds in your wallet");
+      return;
+    }
+    
+    // Process payment
+    toast.success("Payment successful! Items purchased.");
+    clearCart();
+    setShowCartDialog(false);
+  };
+
   if (isLoading) return null
 
   return (
@@ -150,6 +179,70 @@ export function SiteHeader() {
               <Gem className="h-4 w-4" />
               <span>{gemBalance}</span>
             </Badge>
+            {/* Shopping Cart */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cart.length > 0 && (
+                    <span className="absolute -right-0 -top-0 h-4 w-4 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground">
+                      {cart.length}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel className="flex items-center justify-between">
+                  <span>Cart</span>
+                  {cart.length > 0 && (
+                    <Badge variant="secondary" className="ml-2">{cart.length} item{cart.length !== 1 ? 's' : ''}</Badge>
+                  )}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {cart.length === 0 ? (
+                  <div className="py-2 px-2 text-center text-sm text-muted-foreground">
+                    Your cart is empty
+                  </div>
+                ) : (
+                  <>
+                    <div className="max-h-[200px] overflow-y-auto py-1">
+                      {cart.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 rounded-sm">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{item.title}</p>
+                            <p className="text-xs text-muted-foreground">${item.price.toFixed(2)}</p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-6 w-6"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <DropdownMenuSeparator />
+                    <div className="p-2">
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium">Total:</span>
+                        <span className="text-sm font-bold">
+                          ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+                        </span>
+                      </div>
+                      <Button 
+                        className="w-full" 
+                        size="sm"
+                        onClick={() => setShowCartDialog(true)}
+                      >
+                        Checkout
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <ThemeToggle />
           {!user ? (
@@ -262,7 +355,7 @@ export function SiteHeader() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to={`/user/${user.user_metadata?.username || 'profile'}`}>
+                    <Link to={`/user/${user?.user_metadata?.username || 'profile'}`}>
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
@@ -297,6 +390,114 @@ export function SiteHeader() {
           )}
         </div>
       </div>
+
+      {/* Cart Checkout Dialog */}
+      <Dialog open={showCartDialog} onOpenChange={setShowCartDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Checkout</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="rounded-md border">
+              <div className="p-4 font-medium border-b">
+                Cart Items ({cart.length})
+              </div>
+              <div className="divide-y">
+                {cart.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3">
+                      {item.artworkUrl && (
+                        <div className="h-10 w-10 rounded-md overflow-hidden">
+                          <img 
+                            src={item.artworkUrl} 
+                            alt={item.title} 
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-medium">{item.title}</p>
+                        <p className="text-sm text-muted-foreground">{item.type || 'Beat'}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">${item.price.toFixed(2)}</p>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 px-2 text-red-500 hover:text-red-700"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-md border p-4 space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span>${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Tax</span>
+                <span>$0.00</span>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex justify-between font-medium">
+                <span>Total</span>
+                <span>${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div className="rounded-md border p-4 bg-muted/20">
+              <div className="flex items-center gap-2">
+                <Wallet className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">Wallet Balance</p>
+                  <p className="text-sm text-muted-foreground">${walletBalance.toFixed(2)} available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCartDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCheckout}
+              disabled={cart.length === 0 || cart.reduce((sum, item) => sum + item.price, 0) > walletBalance}
+            >
+              Complete Purchase
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
+  )
+}
+
+function Trash2(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18" />
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+      <line x1="10" x2="10" y1="11" y2="17" />
+      <line x1="14" x2="14" y1="11" y2="17" />
+    </svg>
   )
 }

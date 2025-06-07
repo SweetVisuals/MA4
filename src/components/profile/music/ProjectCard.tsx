@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/auth-context';
 import { toast } from 'sonner';
+import { useCart } from '@/contexts/cart-context';
 
 interface ProjectCardProps {
   project: {
@@ -36,6 +37,7 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
   const { currentTrack, playTrack } = useAudioPlayer();
   const { user } = useAuth();
+  const { addToCart } = useCart();
   const [trackGems, setTrackGems] = useState<Record<string, number>>({});
   const [isDeleting, setIsDeleting] = useState(false);
   
@@ -145,6 +147,17 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
     }
   };
 
+  const handleAddToCart = () => {
+    addToCart({
+      id: project.id,
+      title: project.title,
+      price: 29.99, // Default price if not specified
+      artworkUrl: project.artworkUrl,
+      type: 'Beat'
+    });
+    toast.success(`${project.title} added to cart`);
+  };
+
   return (
     <div id={id} className="group relative rounded-lg overflow-hidden bg-muted/50 hover:bg-muted transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="p-4 space-y-3">
@@ -158,7 +171,7 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             {project.isPopular && (
-              <Badge variant="secondary\" className="shrink-0 text-xs">
+              <Badge variant="secondary" className="shrink-0 text-xs">
                 Popular
               </Badge>
             )}
@@ -168,7 +181,7 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent>
                 <DropdownMenuItem>
                   <Heart className="h-4 w-4 mr-2" />
                   Like
@@ -293,13 +306,18 @@ const ProjectCard = ({ project, variant, id, onDelete }: ProjectCardProps) => {
           </div>
           
           <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-7 text-xs gap-1"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="h-3 w-3" />
+              Buy
+            </Button>
             <MessageSquare 
               className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary hover:scale-110 transition-all" 
               title="Contact Creator"
-            />
-            <ShoppingCart 
-              className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary hover:scale-110 transition-all" 
-              title="Buy Now"
             />
           </div>
         </div>
