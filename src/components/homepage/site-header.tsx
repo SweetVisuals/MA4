@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/@/ui/dropdown-menu"
-import { Bell, Settings, LogOut, User, MessageSquare, LayoutGrid, Wallet, Gem, ShoppingCart } from "lucide-react"
+import { Bell, Settings, LogOut, User, MessageSquare, LayoutGrid, Wallet, Gem, ShoppingCart, ShoppingBag } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useEffect, useState } from "react"
@@ -361,6 +361,12 @@ export function SiteHeader() {
                       {unreadMessages > 0 && (
                         <Badge variant="secondary\" className="ml-auto">{unreadMessages}</Badge>
                       )}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/orders">
+                      <ShoppingBag className="mr-2 h-4 w-4" />
+                      My Orders
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
