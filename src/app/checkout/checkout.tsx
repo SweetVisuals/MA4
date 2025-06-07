@@ -40,6 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/@/ui/tooltip";
+import { supabase } from "@/lib/supabase";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -53,6 +54,7 @@ export default function CheckoutPage() {
   const [walletBalance, setWalletBalance] = useState(500); // Mock wallet balance
   const [savePaymentInfo, setSavePaymentInfo] = useState(false);
   const [guestCheckout, setGuestCheckout] = useState(!user);
+  const [orderId, setOrderId] = useState<string>('');
   
   // Form state
   const [formData, setFormData] = useState({
@@ -82,8 +84,9 @@ export default function CheckoutPage() {
   
   // Calculate order summary
   const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const processingFee = subtotal * 0.03; // 3% processing fee
   const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + tax;
+  const total = subtotal + tax + processingFee;
   
   // Check if cart is empty and redirect if needed
   useEffect(() => {
@@ -140,6 +143,39 @@ export default function CheckoutPage() {
         if (!formData.cryptoAddress) {
           throw new Error('Please enter a crypto wallet address');
         }
+      }
+      
+      // Create order in database
+      const orderData = {
+        user_id: user?.id || null,
+        customer_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        shipping_address: `${formData.address}, ${formData.city}, ${formData.state} ${formData.zipCode}, ${formData.country}`,
+        payment_method: paymentMethod,
+        subtotal: subtotal,
+        processing_fee: processingFee,
+        tax: tax,
+        total: total,
+        status: 'completed',
+        items: cart.map(item => ({
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          type: item.type || 'Beat'
+        }))
+      };
+      
+      // If user is logged in, save order to database
+      if (user) {
+        // In a real app, you would save the order to your database
+        // For this example, we'll just generate a random order ID
+        const generatedOrderId = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+        setOrderId(generatedOrderId);
+      } else {
+        // For guest checkout, just generate a random order ID
+        const generatedOrderId = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+        setOrderId(generatedOrderId);
       }
       
       // Simulate successful payment
@@ -669,6 +705,10 @@ export default function CheckoutPage() {
                         <span>${subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-muted-foreground">Processing Fee (3%)</span>
+                        <span>${processingFee.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Tax (8%)</span>
                         <span>${tax.toFixed(2)}</span>
                       </div>
@@ -722,7 +762,7 @@ export default function CheckoutPage() {
             <p>Your order has been successfully processed!</p>
             <div className="rounded-lg border p-4 bg-muted/20">
               <p className="font-medium">Order Details</p>
-              <p className="text-sm text-muted-foreground">Order #: {Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}</p>
+              <p className="text-sm text-muted-foreground">Order #: {orderId || Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}</p>
               <p className="text-sm text-muted-foreground">Total: ${total.toFixed(2)}</p>
               <p className="text-sm text-muted-foreground">Payment Method: {
                 paymentMethod === 'card' ? 'Credit/Debit Card' : 
@@ -737,9 +777,9 @@ export default function CheckoutPage() {
           <DialogFooter>
             <Button onClick={() => {
               setShowSuccessDialog(false);
-              navigate('/dashboard');
+              navigate('/dashboard/orders');
             }}>
-              Go to Dashboard
+              View Order History
             </Button>
           </DialogFooter>
         </DialogContent>

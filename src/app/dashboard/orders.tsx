@@ -3,7 +3,7 @@ import { AppSidebar } from "@/components/dashboard/layout/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/@/ui/sidebar";
 import { SiteHeader } from "@/components/dashboard/layout/site-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/@/ui/card";
-import { Button } from "@/components/@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/@/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/@/ui/tabs";
 import { Input } from "@/components/@/ui/input";
@@ -81,6 +81,15 @@ interface Order {
   attachmentUrl?: string;
   attachmentName?: string;
   notes?: string;
+  processingFee?: number;
+  tax?: number;
+  total?: number;
+  items?: Array<{
+    id: string;
+    title: string;
+    price: number;
+    type?: string;
+  }>;
 }
 
 interface OrderStats {
@@ -142,7 +151,18 @@ export default function OrdersPage() {
       details: "Exclusive rights purchase",
       attachmentUrl: "https://example.com/files/summer-vibes-beat.mp3",
       attachmentName: "summer-vibes-beat.mp3",
-      notes: "Customer requested minor adjustments to the hi-hats. Delivered final version on March 16."
+      notes: "Customer requested minor adjustments to the hi-hats. Delivered final version on March 16.",
+      processingFee: 9.00,
+      tax: 24.00,
+      total: 332.99,
+      items: [
+        {
+          id: "item-001",
+          title: "Summer Vibes Beat",
+          price: 299.99,
+          type: "Beat"
+        }
+      ]
     },
     {
       id: "ORD-002",
@@ -163,7 +183,18 @@ export default function OrdersPage() {
       details: "Full track mixing and mastering",
       attachmentUrl: "https://example.com/files/track-to-mix.wav",
       attachmentName: "track-to-mix.wav",
-      notes: "Client needs this by March 20 for release."
+      notes: "Client needs this by March 20 for release.",
+      processingFee: 15.00,
+      tax: 40.00,
+      total: 554.99,
+      items: [
+        {
+          id: "item-002",
+          title: "Mix & Master Service",
+          price: 499.99,
+          type: "Service"
+        }
+      ]
     },
     {
       id: "ORD-003",
@@ -184,7 +215,18 @@ export default function OrdersPage() {
       details: "5-beat pack with basic license",
       attachmentUrl: "https://example.com/files/trap-pack.zip",
       attachmentName: "trap-pack.zip",
-      notes: "Payment failed due to card issues. Customer plans to try again."
+      notes: "Payment failed due to card issues. Customer plans to try again.",
+      processingFee: 4.50,
+      tax: 12.00,
+      total: 166.49,
+      items: [
+        {
+          id: "item-003",
+          title: "Trap Beat Pack",
+          price: 149.99,
+          type: "Beat Pack"
+        }
+      ]
     },
     {
       id: "ORD-004",
@@ -205,7 +247,18 @@ export default function OrdersPage() {
       details: "Vocal tuning and processing for 3 tracks",
       attachmentUrl: "https://example.com/files/vocals.zip",
       attachmentName: "vocals.zip",
-      notes: "Customer requested natural-sounding tuning. Estimated delivery: March 18."
+      notes: "Customer requested natural-sounding tuning. Estimated delivery: March 18.",
+      processingFee: 6.00,
+      tax: 16.00,
+      total: 221.99,
+      items: [
+        {
+          id: "item-004",
+          title: "Vocal Tuning Service",
+          price: 199.99,
+          type: "Service"
+        }
+      ]
     },
     {
       id: "ORD-005",
@@ -226,7 +279,18 @@ export default function OrdersPage() {
       details: "10 lo-fi beats with standard license",
       attachmentUrl: "https://example.com/files/lofi-collection.zip",
       attachmentName: "lofi-collection.zip",
-      notes: "Customer was very satisfied with the collection. Left a 5-star review."
+      notes: "Customer was very satisfied with the collection. Left a 5-star review.",
+      processingFee: 2.70,
+      tax: 7.20,
+      total: 99.89,
+      items: [
+        {
+          id: "item-005",
+          title: "Lo-Fi Beat Collection",
+          price: 89.99,
+          type: "Beat Pack"
+        }
+      ]
     },
     {
       id: "ORD-006",
@@ -247,7 +311,18 @@ export default function OrdersPage() {
       details: "Custom beat production with revisions",
       attachmentUrl: "https://example.com/files/custom-beat-final.wav",
       attachmentName: "custom-beat-final.wav",
-      notes: "Required 3 revision rounds. Final version delivered on March 14."
+      notes: "Required 3 revision rounds. Final version delivered on March 14.",
+      processingFee: 18.00,
+      tax: 48.00,
+      total: 665.99,
+      items: [
+        {
+          id: "item-006",
+          title: "Custom Beat Production",
+          price: 599.99,
+          type: "Service"
+        }
+      ]
     }
   ];
 
@@ -309,7 +384,7 @@ export default function OrdersPage() {
     const completedOrders = orders.filter(order => order.status === "completed").length;
     const failedOrders = orders.filter(order => order.status === "failed").length;
     
-    const totalRevenue = orders.reduce((sum, order) => sum + order.price, 0);
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.total || order.price), 0);
     const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
     
     // Calculate unique customers for repeat customer rate
@@ -437,8 +512,8 @@ export default function OrdersPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">Orders</h1>
-                <p className="text-muted-foreground">Manage your beat sales and service orders</p>
+                <h1 className="text-2xl font-bold">Order History</h1>
+                <p className="text-muted-foreground">View and manage your orders</p>
               </div>
               <div className="flex items-center gap-2">
                 <Select value={timeRange} onValueChange={(value: '7d' | '30d' | '90d') => setTimeRange(value)}>
@@ -691,7 +766,7 @@ export default function OrdersPage() {
                                 </Button>
                               </TableCell>
                               <TableCell>{getTypeBadge(order.type)}</TableCell>
-                              <TableCell>${order.price.toFixed(2)}</TableCell>
+                              <TableCell>${(order.total || order.price).toFixed(2)}</TableCell>
                               <TableCell>{getStatusBadge(order.status)}</TableCell>
                               <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
                               <TableCell className="text-right">
@@ -787,6 +862,49 @@ export default function OrdersPage() {
                                       </div>
                                     </div>
                                   </div>
+                                  
+                                  {/* Order Items */}
+                                  {order.items && order.items.length > 0 && (
+                                    <div className="mt-4 border-t pt-4">
+                                      <h4 className="font-medium mb-2">Order Items</h4>
+                                      <div className="rounded-md border">
+                                        <Table>
+                                          <TableHeader>
+                                            <TableRow>
+                                              <TableHead>Item</TableHead>
+                                              <TableHead>Type</TableHead>
+                                              <TableHead className="text-right">Price</TableHead>
+                                            </TableRow>
+                                          </TableHeader>
+                                          <TableBody>
+                                            {order.items.map((item) => (
+                                              <TableRow key={item.id}>
+                                                <TableCell>{item.title}</TableCell>
+                                                <TableCell>{item.type || 'Beat'}</TableCell>
+                                                <TableCell className="text-right">${item.price.toFixed(2)}</TableCell>
+                                              </TableRow>
+                                            ))}
+                                            {order.processingFee && (
+                                              <TableRow>
+                                                <TableCell colSpan={2} className="text-right font-medium">Processing Fee (3%)</TableCell>
+                                                <TableCell className="text-right">${order.processingFee.toFixed(2)}</TableCell>
+                                              </TableRow>
+                                            )}
+                                            {order.tax && (
+                                              <TableRow>
+                                                <TableCell colSpan={2} className="text-right font-medium">Tax (8%)</TableCell>
+                                                <TableCell className="text-right">${order.tax.toFixed(2)}</TableCell>
+                                              </TableRow>
+                                            )}
+                                            <TableRow>
+                                              <TableCell colSpan={2} className="text-right font-bold">Total</TableCell>
+                                              <TableCell className="text-right font-bold">${(order.total || order.price).toFixed(2)}</TableCell>
+                                            </TableRow>
+                                          </TableBody>
+                                        </Table>
+                                      </div>
+                                    </div>
+                                  )}
                                   
                                   <div className="mt-4 border-t pt-4">
                                     <h4 className="font-medium mb-2">Update Status</h4>
@@ -1007,6 +1125,28 @@ function MapPin(props: React.SVGProps<SVGSVGElement>) {
     >
       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
       <circle cx="12" cy="10" r="3" />
+    </svg>
+  )
+}
+
+function Package(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m7.5 4.27 9 5.15" />
+      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      <path d="m3.3 7 8.7 5 8.7-5" />
+      <path d="M12 22V12" />
     </svg>
   )
 }
